@@ -1,0 +1,49 @@
+# The code below uses the cross_val_score() function to obtain the mean absolute error (MAE), averaged across five different folds
+
+from sklearn.model_selection import cross_val_score
+
+# Multiply by -1 since sklearn calculates *negative* MAE
+scores = -1 * cross_val_score(my_pipeline, X, y,
+                              cv=5,
+                              scoring='neg_mean_absolute_error')
+
+print("Average MAE score:", scores.mean())
+
+# eg with pipeline and testing with different n_estimators and chosing the best one
+
+#Step 1: Write a useful function
+
+def get_score(n_estimators):
+    """Return the average MAE over 3 CV folds of random forest model.
+    
+    Keyword argument:
+    n_estimators -- the number of trees in the forest
+    """
+    my_pipeline = Pipeline( steps = [
+        ('preprocessor', SimpleImputer()),
+        ('model', RandomForestRegressor(n_estimators = n_estimators , random_state = 0))
+    ])
+    
+    scores = -1 * cross_val_score( my_pipeline, X,y, cv = 3, scoring = 'neg_mean_absolute_error')
+    return scores.mean()
+    # Replace this body with your own code
+    pass
+
+
+
+#Step 2: Test different parameter values
+
+results = {}
+for i in range(1,9):
+    results[50*i] = get_score(50*i)
+
+#Step 3: Find the best parameter value by visualizing
+
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+plt.plot(list(results.keys()),list(results.values()))
+plt.show()
+
+# also we can get the best combination of parameterd to use by using a sklearn model " grid_search" as shown below
+
