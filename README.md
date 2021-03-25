@@ -1,2 +1,2 @@
 # ML-project
-Contains all the simple ML projects developed by me
+Contains all the simple ML snippets developed by me
